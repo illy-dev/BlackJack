@@ -8,24 +8,28 @@ class CardType:
     value: int
     
 class Deck:
-    def __init__(self):
+    def __init__(self, num_decks=1):
         self.cards = []
+        self.num_decks = num_decks
         self.build()
 
     def build(self):
         self.cards = []
-        for value in VALUES:
-            for suit in SUITS:
-                card_name = f"{value}{suit}"
-                card_value = 11 if value == "A" else 10 if value in "JQK" else int(value)
-                self.cards.append(CardType(name=card_name, value=card_value))
+        for _ in range(self.num_decks):
+            for value in VALUES:
+                for suit in SUITS:
+                    card_name = f"{value}{suit}"
+                    card_value = 11 if value == "A" else 10 if value in "JQK" else int(value)
+                    self.cards.append(CardType(name=card_name, value=card_value))
 
     def shuffle(self):
         shuffle(self.cards)
         
     def deal(self):
-        if self.cards:
-            return self.cards.pop()
+        if not self.cards:
+            self.build()
+            self.shuffle()
+        return self.cards.pop()
         
 class Hand:
     def __init__(self):
@@ -47,6 +51,7 @@ class Hand:
         for card in aces:
             self.value += 11 if self.value <= 10 else 1
         return self.value
+    
 
     def display_cards(self):
         for card in self.cards:
